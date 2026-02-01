@@ -47,6 +47,7 @@ Each platform module follows the same pattern:
 |--------|-----|-------------|
 | `youtube.py` | RSS feeds | `fetch_all_channels()`, `search_videos_for_keywords()` |
 | `twitter.py` | X API v2 | `TwitterMonitor.search_recent()`, `.fetch_accounts()` |
+| `grok_x.py` | xAI Grok x_search | `GrokXMonitor.search_keywords()`, `.search_accounts()` |
 | `meta.py` | Graph API | `MetaMonitor.fetch_all_pages()` |
 | `linkedin.py` | LinkedIn API | `LinkedInMonitor.fetch_all_companies()` |
 | `manual.py` | Local JSON | `ManualEntryManager.add_entry()`, `.get_all_entries()` |

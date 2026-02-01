@@ -12,6 +12,13 @@ venv/
 social_data.json
 dashboard.html
 manual_entries.json
+trend_report.md
+
+# SSH keys
+ssh_key_github
+ssh_key_github.pub
+*.pem
+*.key
 
 # IDE
 .idea/

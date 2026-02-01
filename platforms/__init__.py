@@ -4,6 +4,7 @@ from .youtube import fetch_all_channels as fetch_youtube
 from .twitter import TwitterMonitor, create_monitor as create_twitter_monitor
 from .meta import MetaMonitor, create_monitor as create_meta_monitor
 from .linkedin import LinkedInMonitor, create_monitor as create_linkedin_monitor
+from .grok_x import GrokXMonitor, create_monitor as create_grok_monitor
 from .manual import ManualEntryManager
 
 __all__ = [
@@ -14,5 +15,7 @@ __all__ = [
     "create_meta_monitor",
     "LinkedInMonitor",
     "create_linkedin_monitor",
+    "GrokXMonitor",
+    "create_grok_monitor",
     "ManualEntryManager",
 ]

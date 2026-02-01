@@ -26,8 +26,10 @@ from platforms.youtube import fetch_all_channels as fetch_youtube, search_videos
 from platforms.twitter import create_monitor as create_twitter_monitor
 from platforms.meta import create_monitor as create_meta_monitor
 from platforms.linkedin import create_monitor as create_linkedin_monitor
+from platforms.grok_x import create_monitor as create_grok_monitor
 from platforms.manual import ManualEntryManager
 from dashboard import generate_dashboard
+from analyze_trends import analyze_data, generate_report as generate_trend_report
 
 
 class SocialMediaListener:
@@ -42,6 +44,7 @@ class SocialMediaListener:
         self.twitter = create_twitter_monitor(config.TWITTER_API)
         self.meta = create_meta_monitor(config.META_API)
         self.linkedin = create_linkedin_monitor(config.LINKEDIN_API)
+        self.grok = create_grok_monitor(getattr(config, 'GROK_API', {}))
         self.manual = ManualEntryManager()
 
     def _load_data(self) -> Dict:
@@ -126,10 +129,25 @@ class SocialMediaListener:
         results["youtube"] = len(new_youtube)
         self.data["posts"].extend(new_youtube)
 
-        # Twitter/X
-        if self.twitter.is_configured():
+        # Twitter/X (via native API or Grok)
+        twitter_posts = []
+
+        # Option 1: Use Grok for X searching (preferred - uses x_search tool)
+        if self.grok.is_configured():
+            print("\n🤖 Fetching X via Grok...")
+
+            # Fetch from monitored accounts
+            grok_accounts = getattr(config, 'GROK_X_ACCOUNTS', [])
+            if grok_accounts:
+                twitter_posts.extend(self.grok.search_accounts(grok_accounts))
+
+            # Search for keywords
+            if config.KEYWORDS:
+                twitter_posts.extend(self.grok.search_keywords(config.KEYWORDS))
+
+        # Option 2: Fall back to native Twitter API if configured
+        elif self.twitter.is_configured():
             print("\n🐦 Fetching Twitter/X...")
-            twitter_posts = []
 
             # Fetch from monitored accounts
             if config.TWITTER_ACCOUNTS:
@@ -138,13 +156,14 @@ class SocialMediaListener:
             # Search for keywords
             if config.KEYWORDS:
                 twitter_posts.extend(self.twitter.search_keywords(config.KEYWORDS))
-
-            new_twitter = self._deduplicate(twitter_posts)
-            results["twitter"] = len(new_twitter)
-            self.data["posts"].extend(new_twitter)
         else:
-            print("\n⚠️  Twitter/X: Not configured (add bearer_token to config)")
-            results["twitter"] = 0
+            print("\n⚠️  Twitter/X: Not configured")
+            print("   Option 1: Add api_key to GROK_API (recommended)")
+            print("   Option 2: Add bearer_token to TWITTER_API")
+
+        new_twitter = self._deduplicate(twitter_posts)
+        results["twitter"] = len(new_twitter)
+        self.data["posts"].extend(new_twitter)
 
         # Meta (Facebook/Instagram)
         if self.meta.is_configured():
@@ -221,6 +240,15 @@ class SocialMediaListener:
         generate_dashboard(self.data, output_path)
         return output_path
 
+    def generate_trends(self) -> str:
+        """Generate the trend analysis report."""
+        output_path = "trend_report.md"
+        analysis = analyze_data(self.data)
+        report = generate_trend_report(analysis)
+        with open(output_path, "w", encoding="utf-8") as f:
+            f.write(report)
+        return output_path
+
     def print_summary(self, results: Dict[str, int]):
         """Print a summary of the fetch results."""
         print("\n" + "=" * 50)
@@ -267,6 +295,8 @@ def main():
         listener._save_data()
         dashboard_path = listener.generate_report()
         print(f"✅ Dashboard updated: {dashboard_path}")
+        trends_path = listener.generate_trends()
+        print(f"📊 Trend report updated: {trends_path}")
 
     elif args.dashboard:
         # Just regenerate dashboard
@@ -286,6 +316,8 @@ def main():
                 listener.print_summary(results)
                 dashboard_path = listener.generate_report()
                 print(f"✅ Dashboard updated: {dashboard_path}")
+                trends_path = listener.generate_trends()
+                print(f"📊 Trend report updated: {trends_path}")
                 print(f"\n⏳ Next check in {args.interval} minutes...")
                 time.sleep(args.interval * 60)
         except KeyboardInterrupt:
@@ -299,7 +331,9 @@ def main():
         listener.print_summary(results)
         dashboard_path = listener.generate_report()
         print(f"\n✅ Dashboard generated: {dashboard_path}")
-        print("   Open this file in your browser to view results")
+        trends_path = listener.generate_trends()
+        print(f"📊 Trend report generated: {trends_path}")
+        print("   Open these files to view results")
 
 
 if __name__ == "__main__":

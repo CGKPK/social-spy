@@ -10,18 +10,33 @@ Add your API credentials and monitoring targets here.
 
 # Keywords to monitor across all platforms
 KEYWORDS = [
-    # Add your keywords here
-    # "your brand name",
-    # "your product",
-    # "#yourhashag",
+    "blusky",
+    "rules",
+    "delayed",
+    "payout",
+    "price",
+    "customer service",
+    "propfirm",
+    "prop firm",
+    "#bluskytrading",
+    "#futures",
+    "#rithmic",
+    "#ninjatrader",
+    "#tradovate",
 ]
 
-# YouTube channels to monitor (channel IDs or usernames)
-# These work immediately - no API key required!
+# YouTube channels to monitor (channel IDs required)
 YOUTUBE_CHANNELS = [
-    # Example channels - replace with your own
-    {"name": "TED", "channel_id": "UCAuUUnT6oDeKwE6v1US8Lg"},
-    {"name": "Veritasium", "channel_id": "UCHnyfMqiRRG1u-2MsSQLbXA"},
+    {"name": "The Futures Desk", "channel_id": "UCUSv1c3-HArVPtFkBCH7Jbw"},
+    {"name": "Prop Firm Match", "channel_id": "UCY-imVjtKo8NO4TEEZjh8cw"},
+    {"name": "My Funded Futures", "channel_id": "UCBeO1KrgxOjoZCq6MAsYiVA"},
+    {"name": "Day Trading Jesus", "channel_id": "UCS5_gAI-iB-aw6_kihiU_FQ"},
+    {"name": "Kimmel Trading", "channel_id": "UCQqcRmce3eIAIaAOtNSHrGQ"},
+    {"name": "Jason Graystone", "channel_id": "UCCDu1S_OmR5XtM-AzL-_U1Q"},
+    {"name": "Kelly Ann Trading", "channel_id": "UCUiQAfFHrTW7LOk29k8DcJA"},
+    {"name": "Real Deal Futures", "channel_id": "UC4qtVl1kpaKhNPd_AgeS5Dw"},
+    {"name": "Trade Pro", "channel_id": "UCWoWTvvwhfuAqDuxYJHa03Q"},
+    {"name": "Mike Swartz", "channel_id": "UCH-_Z7YSk4QTFmXbYSSBB4w"},
 ]
 
 # X/Twitter accounts to monitor
@@ -71,6 +86,24 @@ LINKEDIN_API = {
 YOUTUBE_API = {
     "api_key": "",  # Optional - RSS feeds work without this
 }
+
+# xAI Grok API (https://console.x.ai/) - For X/Twitter monitoring via Grok
+# Grok has direct real-time access to X data - no separate Twitter API needed!
+GROK_API = {
+    "api_key": "",  # Add your xAI API key here
+}
+
+# X accounts to monitor via Grok (alternative to TWITTER_ACCOUNTS)
+GROK_X_ACCOUNTS = [
+    "@BluSkyTrading",
+    "@saveonpropfirms",
+    "@propfirmwise",
+    "@onlypropfirms",
+    "@FutureswithMike",
+    "@FundedNext",
+    "@TakeProfitLLC",
+    "@Patrickwieland",
+]
 
 # =============================================================================
 # SETTINGS
